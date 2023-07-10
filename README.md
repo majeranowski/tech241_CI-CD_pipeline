@@ -48,7 +48,7 @@ By implementing a CI/CD pipeline, development teams can achieve faster release c
 
 * Jenkins supports webhooks as a means of triggering CI/CD pipelines and jobs based on external events or notifications. Webhooks allow Jenkins to receive HTTP callbacks from external systems or services, notifying it of specific events or changes. When a webhook event occurs, Jenkins can be configured to automatically initiate a pipeline build or trigger a specific job. (Analogy to ordering a food online and receiving updates what's happening with your order).
 
-* We need to generate another pair of SSH keys for jenkins and connect it with github to allow Jenkins cloning repo automatically form github.
+* We need to generate another pair of SSH keys for jenkins and connect it with github to allow Jenkins cloning repo automatically form github. Public key to github repo and private key to Jenkins.
 
 * **Master Node**: The master node is like the boss of Jenkins. It manages the overall Jenkins system and controls everything. It decides what needs to be done, when it should be done, and who should do it. It stores the instructions and configuration for your pipelines and handles the user interface that you interact with.
 
@@ -60,3 +60,24 @@ In simpler terms, the master node is the brain of Jenkins, managing and organizi
 The master node tells the agent nodes what to do, and they carry out the tasks. This division of work allows Jenkins to handle multiple jobs and distribute the workload across different machines, making the whole process faster and more efficient.
 
 * We will need to provide the pem file for our AWS to Jenkins so it has rights to deploy the app on our behalf. Also on our E2C instance we will need to add security rule for Jenkins.
+
+## Creating SSH key pair and adding public key to GitHub
+
+`ssh-keygen -t rsa -b 4096 -C "kf.dudek@gmail.com"` - command to generate ssh key pair
+
+**Add SSH Key to GitHub:**
+
+* Log in to your GitHub account.
+  
+* Go to "app" repo and then to settings by clicking on your profile picture.
+  
+* In the left sidebar, click on "Deploy keys"
+Click on "New SSH key."
+
+* Give the key a title (e.g., "Jenkins SSH key").
+  
+* Copy the contents of the public key file and paste it into the "Key" field.
+* Click on "Add SSH key" to save it.
+
+
+![diagram](./images/ssh-key-github.png)
