@@ -59,6 +59,8 @@ In simpler terms, the master node is the brain of Jenkins, managing and organizi
 
 The master node tells the agent nodes what to do, and they carry out the tasks. This division of work allows Jenkins to handle multiple jobs and distribute the workload across different machines, making the whole process faster and more efficient.
 
+Master Node is separated from Agent Node because in Master all github, production and the rest of things is included. If testing breaks it is separated from Master and helps us to reduce the load from master node. It is also runs on AWS.
+
 * We will need to provide the pem file for our AWS to Jenkins so it has rights to deploy the app on our behalf. Also on our E2C instance we will need to add security rule for Jenkins.
 
 ## Creating SSH key pair and adding public key to GitHub
@@ -81,3 +83,71 @@ Click on "New SSH key."
 
 
 ![diagram](./images/ssh-key-github.png)
+
+
+# Setting up integration between Jenkins and Github
+
+![](./images/diagram_webhook.png)
+
+* Step 1: Coppy HTTPS url from github repo and add it to the project url field
+
+![](./images/1.png)
+
+![](./images/HTTPS-git.png)
+
+* Step 2: In Source Code Management select 'GIT' and copy SSH url from github repo.
+  
+![](./images/2.png)
+
+![](./images/SSH-git.png)
+
+* Step 3: Add credentials by copying private key (the pair of the public key from the app repo with the same name and exact content)
+
+![](./images/3.png)
+
+* Step 4: Change the branch name for main
+
+![](./images/4.png)
+
+* Step 5: In build Environment select provide Node & npm bin/folder to PATH andd choose SParta-Node-JS so it can test our app 
+
+![](./images/node_env.png)
+
+* Step 6: In Office 365 Connector we need to restrict where node agent will test the app to separate it from the Node master
+
+![](./images/agent.png)
+
+* Step 7: testing commands
+
+![](./images/test.png)
+
+* Step 8: Save the job and you are ready to build now to test.
+
+# How to create webhook on GitHub with Jenkins
+
+**Configuring GitHub**
+
+* Step 1: go to your GitHub repository and click on ‘Settings’.
+
+* Step 2: Click on Webhooks and then click on ‘Add webhook’.
+
+* Step 3: In the ‘Payload URL’ field, paste your Jenkins environment URL. At the end of this URL add /github-webhook/. In the ‘Content type’ select: ‘application/json’ and leave the ‘Secret’ field empty.
+
+![](./images/webhook1.png)
+
+* Step 4: In the page ‘Which events would you like to trigger this webhook?’ choose ‘Let me select individual events.’ Then, check ‘Pull Requests’ and ‘Pushes’. At the end of this option, make sure that the ‘Active’ option is checked and click on ‘Add webhook’.
+
+
+![](./images/webhook2.png)
+![](./images/webhook3.png)
+
+**Configuring Jenkins**
+
+* Step 5: In Jenkins, click on ‘New Item’ to create a new project.
+
+* Step 6: Click on the ‘Build Triggers’ tab and then on the ‘GitHub hook trigger for GITScm polling’. Or, choose the trigger of your choice.
+
+![](./images/webhook4.png)
+
+**After all of those steps, Jenkins will run the job everytime we will push or pull changes from the app repo**
+
