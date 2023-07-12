@@ -151,3 +151,70 @@ Click on "New SSH key."
 
 **After all of those steps, Jenkins will run the job everytime we will push or pull changes from the app repo**
 
+
+
+Job 1:
+- create a dev branch on localhost - github
+- - make a change to dev branch and push the code to github. change the branch from main to dev
+  
+Job 2:
+
+- if the tests passes - the code sohuld be merged from dev to main branch
+
+Job 3:
+
+- clone the code from main branch and push to production - aws ec2
+
+end goal is to push once
+
+
+
+
+scp `ssh -o StrictHostKeyChecking=no`
+
+# Creating CI/CD pipeline that deploys app to production after pushing changing from dev branch.
+
+* Step 1: Create a job on that will test the code on dev branch. After code has sucessfully passed the test it will start another job to merch dev branch with main
+
+![](./images_CD/1.png)
+
+![](./images_CD/2.png)
+
+![](./images_CD/3.png)
+
+![](./images_CD/4.png)
+
+* Step 2: Create merge job and push the changes to the main branch by using github agent plugin
+
+![](./images_CD/5.png)
+
+![](./images_CD/6.png)
+
+![](./images_CD/7.png)
+
+![](./images_CD/8.png)
+
+* Step 3: Job that copies the latest repo to EC2 instance and starts the app on the VM. 
+
+Hint: 
+
+```bash
+rsync -avz -e "ssh -o StrictHostKeyChecking=no" app ubuntu@ip:/home/ubuntu
+rsync -avz -e "ssh -o StrictHostKeyChecking=no" environment ubuntu@ip:/home/ubuntu
+ssh -o "StrictHostKeyChecking=no" ubuntu@ip <<EOF
+	sudo bash ./environment/aap/provision.sh
+    sudo bash ./environment/db/provision.sh
+    cd app
+    pm2 kill
+    pm2 start app.js
+EOF
+```
+
+![](./images_CD/9.png)
+
+![](./images_CD/10.png)
+
+![](./images_CD/11.png)
+
+![](./images_CD/12.png)
+
