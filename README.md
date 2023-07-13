@@ -218,3 +218,74 @@ EOF
 
 ![](./images_CD/12.png)
 
+# Installing and running Jenkins from scratch
+
+* Step 1: Creating EC2 instance with SG rule for port 8080 (port where Jenkins is running)
+
+![](./images_jenkins/1.png)
+
+* Step 2: If instance is running just ssh in and install needed dependencies (in this case Java 8 or above)
+
+```bash
+sudo apt update
+
+#  install the default Java Runtime Environment (JRE), which will install the JRE from OpenJDK 11
+sudo apt install default-jre
+
+# You may need the Java Development Kit (JDK) in addition to the JRE in order to compile and run some specific Java-based software
+sudo apt install default-jdk
+```
+
+* Step 3: Install Jenkins
+
+```bash
+# First, add the repository key to the system:
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+
+# When the key is added, the system will return OK. Next, append the Debian package repository address to the server’s sources.list:
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+# When both of these are in place, run update so that apt will use the new repository:
+sudo apt update
+
+# Install Jenkins
+sudo apt install jenkins
+
+# Enabling Jenkins
+sudo systemctl enable jenkins
+
+# Starting Jenkins
+sudo systemctl start jenkins
+
+```
+
+* Step 4: Configuring Jenkins
+
+**To set up your installation, visit Jenkins on its default port, 8080, using your server domain name or IP address: http://your_server_ip_or_domain:8080**
+
+
+![](./images_jenkins/2.png)
+
+**password command**
+
+`sudo cat /var/lib/jenkins/secrets/initialAdminPassword` 
+
+* Step 5: Follow the set up pages
+
+* Step 6: Configure github and jenkins
+  - In Jenkins settings configure Github plugin to allow connection between our github and jenkins
+  - As a credentials I have created an access token on github page
+
+![](./images_jenkins/3.png)
+
+![](./images_jenkins/4.png)
+
+ - In this place we can in the same time creating a webhook:
+
+![](./images_jenkins/5.png)
+
+* Step 7: After all these steps is just a matter to download the correct plugins (In Our case NodeJS and SSH agent) and recreate steps of creating pipeline.
+
+![](./images_jenkins/6.png)
+
+---
